@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Run radioCLI from the repository, without installation.
+# Also works through a symlink (~/.local/bin/radiocli).
+set -euo pipefail
+
+SOURCE="${BASH_SOURCE[0]}"
+while [ -L "$SOURCE" ]; do
+  DIR="$(cd -P -- "$(dirname -- "$SOURCE")" && pwd)"
+  SOURCE="$(readlink -- "$SOURCE")"
+  case "$SOURCE" in
+    /*) ;;
+    *) SOURCE="$DIR/$SOURCE" ;;
+  esac
+done
+HERE="$(cd -P -- "$(dirname -- "$SOURCE")" && pwd)"
+
+export PYTHONPATH="$HERE/src${PYTHONPATH:+:$PYTHONPATH}"
+exec python3 -m radiocli "$@"
